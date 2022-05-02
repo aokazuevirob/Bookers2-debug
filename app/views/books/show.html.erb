@@ -42,8 +42,32 @@
               <%= link_to 'Destroy', @book, method: :delete, data: { confirm: '本当に消しますか？' }, class: "btn btn-sm btn-danger destroy_book_#{@book.id}"%>
               <% end %>
             </td>
+            <td>
+              <p>コメント数：<%= @book.book_comments.count %></p>
+            </td>
+        </tr>
+        <tr>
+          <td>
+            <% @book.book_comments.each do |book_comment| %>
+              <p><%= image_tag book_comment.user.get_profile_image, size:"50x50" %></p>
+              <%= book_comment.user.name %>
+              <td>
+              <%= book_comment.comment %>
+              </td>
+              <td>
+                <% if book_comment.user == current_user %>
+                  <%= link_to "Destroy", book_book_comment_path(book_comment.book, book_comment), method: :delete, class: "btn btn-sm btn-danger" %>
+                <% end %>
+              </td>
+            <% end %>
+          </td>
         </tr>
       </table>
+      <%= render 'layouts/errors', obj: @book %>
+      <%= form_with model: [@book, @book_comment] do |f| %>
+        <%= f.text_area :comment, :size => "70x5",  placeholder:"コメント入力" %><br>
+        <%= f.submit "送信" %>
+      <% end %>
     </div>
   </div>
 </div>
