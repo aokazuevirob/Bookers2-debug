@@ -2,17 +2,14 @@ class BookCommentsController < ApplicationController
 
   def create
     book = Book.find(params[:book_id])
-    comment = current_user.book_comments.new(book_comment_params)
-    comment.book_id = book.id
-    comment.save
-    redirect_back(fallback_location: root_path)
+    @comment = current_user.book_comments.new(book_comment_params)
+    @comment.book_id = book.id
+    @comment.save
   end
 
   def destroy
-    refroute = Rails.application.routes.recognize_path(request.referrer)
-    @book = Book.find(refroute[:id])
-    BookComment.find(params[:id]).destroy
-    redirect_back(fallback_location: root_path)
+    @comment = BookComment.find_by(id: params[:id], book_id: params[:book_id])
+    @comment.destroy
   end
 
   private
